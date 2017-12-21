@@ -81,6 +81,24 @@ class PyTestCommand(TestCommand):
             sys.exit(0)  # no tests is okay, since we don't have any tests yet
         sys.exit(exitcode)
 
+class BuildCompletionCommand(Command):
+    """Support setup.py build_completion to build the bash completion script."""
+
+    description = 'Build the bash completion script'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import subprocess
+        builder = os.path.join(here, 'devscripts', 'bashcompletion.py')
+        return_code = subprocess.check_call([sys.executable, builder])
+        sys.exit(return_code)
+
 
 setup(
     name=NAME,
@@ -119,5 +137,6 @@ setup(
     cmdclass={
         'publish': PublishCommand,
         'test': PyTestCommand,
+        'build_completion': BuildCompletionCommand,
     },
 )

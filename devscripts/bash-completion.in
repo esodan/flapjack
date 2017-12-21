@@ -20,10 +20,10 @@ _flapjack() {
     _get_comp_words_by_ref cur prev
 
     local help_options="-h --help"
-    local subcommands="build close list open run setup shell test update"
-    local subcommands_module_match="open|close|test"
-    local subcommands_apps_match="run"
-    local subcommands_other_match="build|list|setup|shell|update"
+    local subcommands="%%SUBCOMMANDS%%"
+    local subcommands_module_match="%%SUBCOMMANDS_MODULE_MATCH%%"
+    local subcommands_apps_match="%%SUBCOMMANDS_APPS_MATCH%%"
+    local subcommands_other_match="%%SUBCOMMANDS_OTHER_MATCH%%"
 
     if [[ ${prev} == "flapjack" && ${COMP_CWORD} == 1 ]]; then
         COMPREPLY=( $(compgen -W "--version ${help_options} ${subcommands}" -- ${cur}) )
