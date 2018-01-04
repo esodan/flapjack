@@ -9,10 +9,14 @@
 import io
 import os
 import sys
+import subprocess
 from shutil import rmtree
 
+import distutils
 from setuptools import find_packages, setup, Command
 from setuptools.command.test import test as TestCommand
+from setuptools.command.build_py import build_py
+
 
 NAME = 'flapjack'
 
@@ -26,6 +30,14 @@ about = {}
 with open(os.path.join(here, NAME, '__version__.py')) as f:
     exec(f.read(), about)
 
+def _get_data_files():
+    pkg_config_command = 'pkg-config --variable=completionsdir bash-completion'
+    bash_completions_dir = subprocess.getoutput(pkg_config_command)
+    if bash_completions_dir:
+        return [(bash_completions_dir, ['build/flapjack.bash-completion'])]
+    return []
+
+data_files = _get_data_files()
 
 class PublishCommand(Command):
     """Support setup.py publish."""
@@ -81,23 +93,14 @@ class PyTestCommand(TestCommand):
             sys.exit(0)  # no tests is okay, since we don't have any tests yet
         sys.exit(exitcode)
 
-class BuildCompletionCommand(Command):
-    """Support setup.py build_completion to build the bash completion script."""
-
-    description = 'Build the bash completion script'
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
+class BuildCompletionCommand(build_py):
+    """Support setup.py build to build the bash completion script."""
 
     def run(self):
-        import subprocess
+        build_py.run(self)
+        self.announce("writing autocomplete file", level=distutils.log.INFO)
         builder = os.path.join(here, 'devscripts', 'bashcompletion.py')
-        return_code = subprocess.check_call([sys.executable, builder])
-        sys.exit(return_code)
+        subprocess.check_call([sys.executable, builder])
 
 
 setup(
@@ -137,6 +140,7 @@ setup(
     cmdclass={
         'publish': PublishCommand,
         'test': PyTestCommand,
-        'build_completion': BuildCompletionCommand,
+        'build_py': BuildCompletionCommand,
     },
+    data_files=data_files,
 )
