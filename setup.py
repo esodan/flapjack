@@ -30,6 +30,7 @@ about = {}
 with open(os.path.join(here, NAME, '__version__.py')) as f:
     exec(f.read(), about)
 
+
 def _get_data_files():
     pkg_config_command = 'pkg-config --variable=completionsdir bash-completion'
     bash_completions_dir = subprocess.getoutput(pkg_config_command)
@@ -37,7 +38,9 @@ def _get_data_files():
         return [(bash_completions_dir, ['build/flapjack.bash-completion'])]
     return []
 
+
 data_files = _get_data_files()
+
 
 class PublishCommand(Command):
     """Support setup.py publish."""
@@ -92,6 +95,7 @@ class PyTestCommand(TestCommand):
         if exitcode == 5:
             sys.exit(0)  # no tests is okay, since we don't have any tests yet
         sys.exit(exitcode)
+
 
 class BuildCompletionCommand(build_py):
     """Support setup.py build to build the bash completion script."""
