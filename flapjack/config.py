@@ -21,6 +21,9 @@ _DEFAULTS = {
 
     # default modules are from meta-gnome-devel-platform in jhbuild
     'modules': 'glib pango atk at-spi2-core at-spi2-atk gtk3',
+
+    'test_permissions': None,
+    'shell_permissions': None,
 }
 
 _interp = configparser.ExtendedInterpolation()
