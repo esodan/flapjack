@@ -41,8 +41,15 @@ class _Getter:
         self.key = key
         self.op = op
 
+        self._check_consistency()
+
     def __call__(self):
         return self.op('Common', self.key)
+
+    def _check_consistency(self):
+        if self.key not in _DEFAULTS:
+            raise KeyError('Programmer error: did you add a config key to '
+                           '[Common] without providing a default?')
 
 
 def _string_expandtilde(*args, **kw):
@@ -82,6 +89,9 @@ class _ModuleGetter(_Getter):
         if not _config.has_section(module):
             return None
         return self.op(module, self.key, fallback=None)
+
+    def _check_consistency(self):
+        pass  # all module-specific keys have a default of None
 
 
 module_url = _ModuleGetter('url')
